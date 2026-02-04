@@ -1,0 +1,36 @@
+{% extends "shortener/base.html" %}
+{% block content %}
+<h2>Your Short URLs</h2>
+<a href="{% url 'create-url' %}">Create New</a>
+<table border="1">
+<tr>
+    <th>Short URL</th>
+    <th>Original URL</th>
+    <th>Clicks</th>
+    <th>Created At</th>
+    <th>Expires At</th>
+    <th>QR Code</th>
+    <th>Actions</th>
+</tr>
+{% for url in urls %}
+<tr>
+    <td><a href="{{ request.build_absolute_uri }}/{{ url.short_code }}">{{ url.short_code }}</a></td>
+    <td>{{ url.original_url }}</td>
+    <td>{{ url.click_count }}</td>
+    <td>{{ url.created_at }}</td>
+    <td>{% if url.expires_at %}{{ url.expires_at }}{% else %}-{% endif %}</td>
+    <td>
+        {% if url.qr_code %}
+            <img src="{{ url.qr_code.url }}" alt="QR" width="50">
+        {% endif %}
+    </td>
+    <td>
+        <a href="{% url 'edit-url' url.pk %}">Edit</a> |
+        <a href="{% url 'delete-url' url.pk %}">Delete</a>
+    </td>
+</tr>
+{% empty %}
+<tr><td colspan="5">No URLs yet</td></tr>
+{% endfor %}
+</table>
+{% endblock %}
